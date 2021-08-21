@@ -37,5 +37,17 @@ async def on_ready():
 @client.event
 async def on_message(message):
     if not message.author.bot and message.content.startswith(":sb"):
+        commandElements = list(map(str, message.content.strip(":sb").split()))
+        if len(commandElements) >= 2:
+            commandName = commandElements[0]
+            commandArgs = commandElements[1:]
+        elif len(commandElements) == 1:
+            commandName = commandElements[0]
+
+
+
+
       
+
+
 client.run()
