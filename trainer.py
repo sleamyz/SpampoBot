@@ -151,20 +151,20 @@ class MessageHistoryRNN(nn.Module):
         self.classifier = nn.Linear(self.hidden_dim * 2 * self.num_layers, 1)
 
 
-def forward(self, x):
-    embedding = self.embedding_layer(x)
-    _, (hidden, cell) = self.RNN(embedding)
+    def forward(self, x):
+        embedding = self.embedding_layer(x)
+        _, (hidden, cell) = self.RNN(embedding)
 
-    # hidden - The final state we use
-    # hidden: Tensor(Num layers, N, Dimensional)
-    hidden = hidden.transpose(0, 1)
-    B = hidden.shape[0]
+        # hidden - The final state we use
+        # hidden: Tensor(Num layers, N, Dimensional)
+        hidden = hidden.transpose(0, 1)
+        B = hidden.shape[0]
 
-    hidden = hidden.reshape(B, -1)
-    # classifier head
-    logits = self.classifier(hidden)
-    logits = logits.reshape(-1, )
-    return logits
+        hidden = hidden.reshape(B, -1)
+        # classifier head
+        logits = self.classifier(hidden)
+        logits = logits.reshape(-1, )
+        return logits
 
 
 # for now this is just a copy of andrew's code, will change later to tune it
