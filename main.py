@@ -12,21 +12,7 @@ import aiohttp
 import random
 import textwrap
 import inspect
-from utils.stopwatch import Stopwatch
-from utils.type import Type
-from contextlib import redirect_stdout
-from discord.ext import commands
 import json
-import ezjson
-import colorama
-import difflib
-import math
-from box import Box
-from motor.motor_asyncio import AsyncIOMotorClient
-from ext.context import DatContext
-from ext.logger import Logger as logger
-from cogs.utils.utils import Utils
-from audio.AudioManager import AudioManager
 
 client = discord.Client()
 
