@@ -42,6 +42,8 @@ class Identifier:
                 encMessageHistory.append(self.unknownToken)
             else:
                 encMessageHistory.append(self.wordToIndex[word])
+
+        #no gradient (this part doesn't train the model, since it should only be periodically trained from the new data accumulated)
         with torch.no_grad():
             output = torch.model(encMessageHistory)
             output = torch.sigmoid(output)
