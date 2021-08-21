@@ -32,7 +32,7 @@ class Identifier:
         self.model.load_state_dict(torch.load("PATH"))
         self.model.eval()
 
-    def id(self, messageHistory):
+    def probIsABot(self, messageHistory):
         #this part processes the message history into something the nn can process
         tokMessageHistory = nltk.word_tokenize(messageHistory.translate(str.maketrans(string.punctuation," " * len(string.punctuation))))
         encMessageHistory = []
@@ -42,8 +42,11 @@ class Identifier:
                 encMessageHistory.append(self.unknownToken)
             else:
                 encMessageHistory.append(self.wordToIndex[word])
+        with torch.no_grad():
+            output = torch.model(encMessageHistory)
+            output = torch.sigmoid(output)
+            return output
 
-        return self.model(encMessageHistory)
 
 class MessageHistoryRNN(nn.Module):
     def __init__(self, vocLen, padIdx):
