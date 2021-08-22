@@ -19,19 +19,6 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 #whenever the bot runs the train code again (to update the model periodically) a new instance of this is made with updated stuff
 class Identifier:
-    def __init__(self):
-        self.tokenizer = transformers.AutoTokenizer.from_pretrained('bert-base-uncased')
-        self.wordToIndex = self.tokenizer.vocab
-        self.indexToWord = {self.wordToIndex[word]: word for word in self.wordToIndex}  # Grab Uncased Vocabulary
-        self.padToken = self.tokenizer.pad_token_id
-        self.unknownToken = self.tokenizer.unk_token_id
-
-        self.model = MessageHistoryRNN(len(self.wordToIndex), len(self.wordToIndex)-1)
-        self.device = device
-        self.model = self.model.to(self.device)
-        self.model.load_state_dict(torch.load("PATH"))
-        self.model.eval()
-
     def probIsABot(self, messageHistory):
         #this part processes the message history into something the nn can process
         tokMessageHistory = nltk.word_tokenize(messageHistory.translate(str.maketrans(string.punctuation," " * len(string.punctuation))))
@@ -48,7 +35,19 @@ class Identifier:
             output = torch.model(encMessageHistory)
             output = torch.sigmoid(output)
             return output
+        
+    def __init__(self):
+        self.tokenizer = transformers.AutoTokenizer.from_pretrained('bert-base-uncased')
+        self.wordToIndex = self.tokenizer.vocab
+        self.indexToWord = {self.wordToIndex[word]: word for word in self.wordToIndex}  # Grab Uncased Vocabulary
+        self.padToken = self.tokenizer.pad_token_id
+        self.unknownToken = self.tokenizer.unk_token_id
 
+        self.model = MessageHistoryRNN(len(self.wordToIndex), len(self.wordToIndex)-1)
+        self.device = device
+        self.model = self.model.to(self.device)
+        self.model.load_state_dict(torch.load("PATH"))
+        self.model.eval()
 
 class MessageHistoryRNN(nn.Module):
     def __init__(self, vocLen, padIdx):

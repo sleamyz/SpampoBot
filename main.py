@@ -20,7 +20,7 @@ from numpy.ma.bench import timer
 
 import identifier
 
-#commented out here cause the thing isnt trained yet
+#commented out because the bot has not yet been trained yet
 #identifier = identifier.Identifier()
 
 bot = commands.Bot("!", intents=discord.Intents.default())
@@ -70,10 +70,10 @@ async def _riskList(ctx, certainty):
     else:
         userList = ctx.guild.members
         outputString = "Users above the specified certainty for being a bot:\n"
-        #for member in userList:
-            #commented out here cause the thing isnt trained yet
+        for member in userList:
+            #commented out because the bot has not been trained yet
             #if identifier.probIsABot(bot.messageCache[str(member.id)]) >= certainty:
-                #outputString = outputString+str(member.id)+"\n"
+                outputString = outputString+str(member.id)+"\n"
 
         return await ctx.send(outputString)
 
@@ -84,7 +84,7 @@ async def ping(ctx):
 @bot.command(name="eval", aliases=["ev"])
 async def _eval(ctx, *, code: str):
     #if not dev_check(ctx.author.id):
-        #return await ctx.send(f"Sorry, but you can't run this command because you ain't a developer! {bot.get_emoji(691757044361068574)}")
+        #return await ctx.send(f"Sorry, but you can't run this command because you aren't a developer! {bot.get_emoji(691757044361068574)}")
     env = {
         "bot": bot,
         "ctx": ctx,
@@ -160,10 +160,10 @@ async def _eval(ctx, *, code: str):
 @bot.event
 async def close():
     with open("messages.json", "w") as messageFile:
-        messageFile.truncate(0)  # clears file
+        # messageFile.truncate(0)  # clears file
         messageFile.write(json.dumps(bot.messageCache))
     with open("spamlist.json", "w") as spamFile:
-        spamFile.truncate(0)  # clears file
+        # spamFile.truncate(0)  # clears file
         spamFile.write(json.dumps(bot.spammerList))
 
 #-----------------MAIN------------------
