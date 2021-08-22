@@ -63,7 +63,6 @@ class MessageHistoryRNN(nn.Module):
         self.RNN = nn.LSTM(self.embeddingDin, self.hiddenDim, self.numLayers, batch_first=True, bidirectional=True)
         self.classifier = nn.Linear(self.hidden_dim * 2 * self.num_layers, 1)
 
-
     def forward(self, x):
         embedding = self.embedding_layer(x)
         _, (hidden, cell) = self.RNN(embedding)
