@@ -134,19 +134,13 @@ async def _eval(ctx, *, code: str):
         else:
             await ctx.message.add_reaction("\u2705")
 
-# updates the JSON files with the new info
-@atexit.register
-def before_exit():
+#-----------------MAIN------------------
+try:
+    bot.run("ODc4NDcxOTk3NTg2MjkyNzc4.YSBqzQ.NUSHwH5J1-b_tPBNPJSzQ_HkJPE")
+finally:
     with open("messages.json", "w") as messageFile:
         #messageFile.truncate(0)  # clears file
         messageFile.write(json.dumps(bot.messageCache))
     with open("spamlist.json", "w") as spamFile:
         #spamFile.truncate(0)  # clears file
         spamFile.write(json.dumps(bot.spammerList))
-
-    print("here")
-
-
-#-----------------MAIN------------------
-bot.run("ODc4NDcxOTk3NTg2MjkyNzc4.YSBqzQ.NUSHwH5J1-b_tPBNPJSzQ_HkJPE")
-
