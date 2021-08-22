@@ -70,10 +70,10 @@ async def _riskList(ctx, certainty):
     else:
         userList = ctx.guild.members
         outputString = "Users above the specified certainty for being a bot:\n"
-        for member in userList:
+        #for member in userList:
             #commented out here cause the thing isnt trained yet
             #if identifier.probIsABot(bot.messageCache[str(member.id)]) >= certainty:
-                outputString = outputString+str(member.id)+"\n"
+                #outputString = outputString+str(member.id)+"\n"
 
         return await ctx.send(outputString)
 
@@ -160,10 +160,10 @@ async def _eval(ctx, *, code: str):
 @bot.event
 async def close():
     with open("messages.json", "w") as messageFile:
-        # messageFile.truncate(0)  # clears file
+        messageFile.truncate(0)  # clears file
         messageFile.write(json.dumps(bot.messageCache))
     with open("spamlist.json", "w") as spamFile:
-        # spamFile.truncate(0)  # clears file
+        spamFile.truncate(0)  # clears file
         spamFile.write(json.dumps(bot.spammerList))
 
 #-----------------MAIN------------------
