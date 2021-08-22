@@ -20,7 +20,7 @@ from numpy.ma.bench import timer
 
 import identifier
 
-#commented out here cause the thing isnt trained yet
+#commented out because the bot has not yet been trained yet
 #identifier = identifier.Identifier()
 
 bot = commands.Bot("!", intents=discord.Intents.default())
@@ -71,7 +71,7 @@ async def _riskList(ctx, certainty):
         userList = ctx.guild.members
         outputString = "Users above the specified certainty for being a bot:\n"
         for member in userList:
-            #commented out here cause the thing isnt trained yet
+            #commented out because the bot has not been trained yet
             #if identifier.probIsABot(bot.messageCache[str(member.id)]) >= certainty:
                 outputString = outputString+str(member.id)+"\n"
 
@@ -84,7 +84,7 @@ async def ping(ctx):
 @bot.command(name="eval", aliases=["ev"])
 async def _eval(ctx, *, code: str):
     #if not dev_check(ctx.author.id):
-        #return await ctx.send(f"Sorry, but you can't run this command because you ain't a developer! {bot.get_emoji(691757044361068574)}")
+        #return await ctx.send(f"Sorry, but you can't run this command because you aren't a developer! {bot.get_emoji(691757044361068574)}")
     env = {
         "bot": bot,
         "ctx": ctx,
