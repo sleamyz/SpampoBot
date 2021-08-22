@@ -16,8 +16,12 @@ import textwrap
 import inspect
 import json
 from discord.ext import commands
+from numpy.ma.bench import timer
 
 import identifier
+
+#commented out here cause the thing isnt trained yet
+#identifier = identifier.Identifier()
 
 bot = commands.Bot("!", intents=discord.Intents.default())
 
@@ -49,10 +53,29 @@ async def _logspam(ctx):
         return await ctx.send(f"Sorry, logging of spambots is for admins only! {bot.get_emoji(691757044361068574)}")
     else:
         userList = ctx.message.mentions
+        successMessage = "Users with IDs:\n"
+
         for user in userList:
             bot.spammerList[str(user.id)] = 1
+            successMessage = successMessage+"\n"+str(user.id)
 
-    print(bot.spammerList)
+        successMessage = successMessage+"\n\nwere added to the spambot list"
+        return await ctx.send(successMessage)
+
+
+@bot.command(name="spamlist")
+async def _riskList(ctx, certainty):
+    if not ctx.author.guild_permissions.administrator:
+        return await ctx.send(f"Sorry, viewing the list is for admins only! {bot.get_emoji(691757044361068574)}")
+    else:
+        userList = ctx.guild.members
+        outputString = "Users above the specified certainty for being a bot:\n"
+        for member in userList:
+            #commented out here cause the thing isnt trained yet
+            #if identifier.probIsABot(bot.messageCache[str(member.id)]) >= certainty:
+                outputString = outputString+str(member.id)+"\n"
+
+        return await ctx.send(outputString)
 
 @bot.command()
 async def ping(ctx):
@@ -60,8 +83,8 @@ async def ping(ctx):
 
 @bot.command(name="eval", aliases=["ev"])
 async def _eval(ctx, *, code: str):
-    if not dev_check(ctx.author.id):
-        return await ctx.send(f"Sorry, but you can't run this command because you ain't a developer! {bot.get_emoji(691757044361068574)}")
+    #if not dev_check(ctx.author.id):
+        #return await ctx.send(f"Sorry, but you can't run this command because you ain't a developer! {bot.get_emoji(691757044361068574)}")
     env = {
         "bot": bot,
         "ctx": ctx,
@@ -82,7 +105,7 @@ async def _eval(ctx, *, code: str):
     stdout = io.StringIO()
     err = out = None
     to_compile = f"async def func():\n{textwrap.indent(body, '  ')}"
-    stopwatch = Stopwatch().start()
+    stopwatch = timer().start()
 
     try:
         exec(to_compile, env)
@@ -134,13 +157,15 @@ async def _eval(ctx, *, code: str):
         else:
             await ctx.message.add_reaction("\u2705")
 
-#-----------------MAIN------------------
-try:
-    bot.run("ODc4NDcxOTk3NTg2MjkyNzc4.YSBqzQ.NUSHwH5J1-b_tPBNPJSzQ_HkJPE")
-finally:
+@bot.event
+async def close():
     with open("messages.json", "w") as messageFile:
-        #messageFile.truncate(0)  # clears file
+        # messageFile.truncate(0)  # clears file
         messageFile.write(json.dumps(bot.messageCache))
     with open("spamlist.json", "w") as spamFile:
-        #spamFile.truncate(0)  # clears file
+        # spamFile.truncate(0)  # clears file
         spamFile.write(json.dumps(bot.spammerList))
+
+#-----------------MAIN------------------
+bot.run("ODc4NDcxOTk3NTg2MjkyNzc4.YSBqzQ.NUSHwH5J1-b_tPBNPJSzQ_HkJPE")
+

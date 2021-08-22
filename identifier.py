@@ -26,7 +26,7 @@ class Identifier:
         self.padToken = self.tokenizer.pad_token_id
         self.unknownToken = self.tokenizer.unk_token_id
 
-        self.model = MessageHistoryRNN(len(self.wordToIndex), len(self.wordToIndex-1))
+        self.model = MessageHistoryRNN(len(self.wordToIndex), len(self.wordToIndex)-1)
         self.device = device
         self.model = self.model.to(self.device)
         self.model.load_state_dict(torch.load("PATH"))
@@ -59,9 +59,9 @@ class MessageHistoryRNN(nn.Module):
         self.hiddenDim = 20
         self.numLayers = 1
 
-        self.embeddingLayer = nn.Embedding(self.vocabLen, self.embeddingDim, padding_idx=self.paddingIdx)
-        self.RNN = nn.LSTM(self.embeddingDin, self.hiddenDim, self.numLayers, batch_first=True, bidirectional=True)
-        self.classifier = nn.Linear(self.hidden_dim * 2 * self.num_layers, 1)
+        self.embeddingLayer = nn.Embedding(self.vocabLen, self.embeddingDim, padding_idx=self.padIdx)
+        self.RNN = nn.LSTM(self.embeddingDim, self.hiddenDim, self.numLayers, batch_first=True, bidirectional=True)
+        self.classifier = nn.Linear(self.hiddenDim * 2 * self.numLayers, 1)
 
     def forward(self, x):
         embedding = self.embedding_layer(x)
