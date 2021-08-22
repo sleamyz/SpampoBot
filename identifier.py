@@ -19,6 +19,23 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 #whenever the bot runs the train code again (to update the model periodically) a new instance of this is made with updated stuff
 class Identifier:
+    def probIsABot(self, messageHistory):
+        #this part processes the message history into something the nn can process
+        tokMessageHistory = nltk.word_tokenize(messageHistory.translate(str.maketrans(string.punctuation," " * len(string.punctuation))))
+        encMessageHistory = []
+        for word in tokMessageHistory:
+            word = word.lower()
+            if word not in self.wordToIndex:
+                encMessageHistory.append(self.unknownToken)
+            else:
+                encMessageHistory.append(self.wordToIndex[word])
+
+        #no gradient (this part doesn't train the model, since it should only be periodically trained from the new data accumulated for performance reasons)
+        with torch.no_grad():
+            output = torch.model(encMessageHistory)
+            output = torch.sigmoid(output)
+            return output
+        
     def __init__(self):
         self.tokenizer = transformers.AutoTokenizer.from_pretrained('bert-base-uncased')
         self.wordToIndex = self.tokenizer.vocab
