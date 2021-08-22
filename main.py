@@ -1,3 +1,5 @@
+import atexit
+
 import discord
 import re
 import os
@@ -13,11 +15,24 @@ import random
 import textwrap
 import inspect
 import json
-from discord.ext import commands 
+from discord.ext import commands
+
+import identifier
 
 bot = commands.Bot("!", intents=discord.Intents.default())
 
+#this takes the info from the jsons which are for offline storage
 bot.messageCache = {}
+bot.spammerList = {}
+try:
+    with open("messages.json", "r") as messageFile:
+        bot.messageCache = json.loads(messageFile.read())
+    with open("spamlist.json", "r") as spamFile:
+        bot.spammerList = json.loads(spamFile.read())
+except:
+    bot.messageCache = {}
+    bot.spammerList = {}
+
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user}!')
@@ -25,15 +40,19 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     bot.messageCache[str(message.author.id)] = bot.messageCache.get(str(message.author.id), " ") + message.content
-    # if not message.author.bot and message.content.startswith(":sb"):
-    #     commandElements = list(map(str, message.content.strip(":sb").split()))
-    #     if len(commandElements) >= 2:
-    #         commandName = commandElements[0]
-    #         commandArgs = commandElements[1:]
-    #     elif len(commandElements) == 1:
-    #         commandName = commandElements[0]
+
     await bot.process_commands(message)
 
+@bot.command(name="logspam")
+async def _logspam(ctx):
+    if not ctx.author.guild_permissions.administrator:
+        return await ctx.send(f"Sorry, logging of spambots is for admins only! {bot.get_emoji(691757044361068574)}")
+    else:
+        userList = ctx.message.mentions
+        for user in userList:
+            bot.spammerList[str(user.id)] = 1
+
+    print(bot.spammerList)
 
 @bot.command()
 async def ping(ctx):
@@ -113,11 +132,21 @@ async def _eval(ctx, *, code: str):
         elif err:
             await ctx.message.add_reaction(bot.get_emoji(522530579627900938))
         else:
-            await ctx.message.add_reaction("\u2705") 
+            await ctx.message.add_reaction("\u2705")
+
+# updates the JSON files with the new info
+@atexit.register
+def before_exit():
+    with open("messages.json", "w") as messageFile:
+        #messageFile.truncate(0)  # clears file
+        messageFile.write(json.dumps(bot.messageCache))
+    with open("spamlist.json", "w") as spamFile:
+        #spamFile.truncate(0)  # clears file
+        spamFile.write(json.dumps(bot.spammerList))
+
+    print("here")
 
 
-
-      
-
-
+#-----------------MAIN------------------
 bot.run("ODc4NDcxOTk3NTg2MjkyNzc4.YSBqzQ.NUSHwH5J1-b_tPBNPJSzQ_HkJPE")
+
