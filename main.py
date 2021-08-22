@@ -163,9 +163,10 @@ async def close():
         # messageFile.truncate(0)  # clears file
         messageFile.write(json.dumps(bot.messageCache))
     with open("spamlist.json", "w") as spamFile:
-        # spamFile.truncate(0)  # clears file
+        #spamFile.truncate(0)  # clears file
         spamFile.write(json.dumps(bot.spammerList))
 
 #-----------------MAIN------------------
-bot.run("ODc4NDcxOTk3NTg2MjkyNzc4.YSBqzQ.NUSHwH5J1-b_tPBNPJSzQ_HkJPE")
+with open("token.txt") as botToken:
+    bot.run(botToken.read())
 
